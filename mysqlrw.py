@@ -1,4 +1,5 @@
 import datetime
+import json
 import random
 import re
 import time
@@ -7,14 +8,20 @@ import time
 import pandas as pd
 import pymysql
 
-import calendar_wechat.wechat_server
-from lib.itchat.utils import logger
-
-
-
+import chat.wechat_server
+from chat.lib.itchat.utils import logger
 
 
 class MysqlRw:
+    # 读取配置文件
+    with open('config.json') as f:
+        config_data = json.load(f)
+    mysql_host = config_data['mysql_host']
+    mysql_username = config_data['mysql_username']
+    mysql_password = config_data['mysql_password']
+    mysql_databases = config_data['mysql_databases']
+
+
     def __init__(self):
         self.connection = None
         self.outcome = []
@@ -25,10 +32,10 @@ class MysqlRw:
         try:
             # 创建连接对象
             connection = pymysql.connect(
-                host="localhost",  # 数据库主机地址
-                user="root",  # 数据库用户名
-                password="root",  # 数据库密码
-                database="wechat_server",  # 数据库名称
+                host=self.mysql_host,  # 数据库主机地址
+                user=self.mysql_username,  # 数据库用户名
+                password=self.mysql_password,  # 数据库密码
+                database=self.mysql_databases,  # 数据库名称
                 charset = 'utf8'
             )
 
@@ -129,7 +136,7 @@ class MysqlRw:
 
 
     def send_message_to_friend(self, task_id, message, nickname):
-        calendar_wechat.wechat_server.WechatServer.send_task(task_id, message, nickname)
+        chat.wechat_server.WechatServer.send_task(task_id, message, nickname)
 
     # 根据用户名取出事件 详情
 
@@ -464,11 +471,11 @@ class MysqlRw:
         try:
             # 创建连接对象
             connection = pymysql.connect(
-                host="localhost",  # 数据库主机地址
-                user="root",  # 数据库用户名
-                password="root",  # 数据库密码
-                database="wechat_server" , # 数据库名称
-                charset = 'utf8'
+                host=self.mysql_host,  # 数据库主机地址
+                user=self.mysql_username,  # 数据库用户名
+                password=self.mysql_password,  # 数据库密码
+                database=self.mysql_databases,  # 数据库名称
+                charset='utf8'
             )
 
             # 创建游标对象
@@ -619,7 +626,7 @@ class MysqlRw:
 
     # 发送方法，匹配就发送
     def send_clandar(self, message, nickname):
-        calendar_wechat.wechat_server.WechatServer.send_calendar(message, nickname)
+        chat.wechat_server.WechatServer.send_calendar(message, nickname)
 
     # 通过下载后的excel会在这里进行读取解析并存入数据库
     def read_excel(self, user_id,filename):

@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-import calendar_wechat.mysqlrw
-from calendar_wechat import mysqlrw
-from lib import itchat
+import chat.mysqlrw
+from chat import mysqlrw
+from chat.lib import itchat
 
-from lib.itchat.utils import logger
+
 
 import sys
 import io
+
+from chat.lib.itchat.utils import logger
+
+
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 
 
-from lib.itchat.content import FRIENDS, TEXT, ATTACHMENT
+
 
 # 微信发送类
 
@@ -221,7 +225,7 @@ class WechatServer:
                             logger.info("群聊ID: %s", chatroom['UserName'])
                             # 发送消息到该群聊
                             # itchat.send(msg=msg, toUserName=chatroom['UserName'])
-                            sql = calendar_wechat.mysqlrw.MysqlRw()
+                            sql = chat.mysqlrw.MysqlRw()
                             at_user = sql.get_group_users(user_id=sql.return_user_id(nickname)[0])
                             itchat.send(msg=at_user + ' ' + msg, toUserName=chatroom['UserName'])
 
@@ -249,9 +253,9 @@ class WechatServer:
                             logger.info("群聊ID: %s", chatroom['UserName'])
                             # 发送消息到该群聊
                             # itchat.send(msg=msg, toUserName=chatroom['UserName'])
-                            sql = calendar_wechat.mysqlrw.MysqlRw()
+                            sql = chat.mysqlrw.MysqlRw()
                             at_user = sql.get_group_users(user_id=sql.return_user_id(nickname)[0])
-                            itchat.send(msg=at_user +' ' + msg, toUserName=chatroom['UserName'])
+                            itchat.send(msg=at_user + ' ' + msg, toUserName=chatroom['UserName'])
                     self.sent_tasks.add(task_id)
 
                 else:
@@ -275,49 +279,11 @@ class WechatServer:
                             logger.info("群聊ID: %s", chatroom['UserName'])
                             # 发送消息到该群聊
                             # itchat.send(msg=msg, toUserName=chatroom['UserName'])
-                            m = calendar_wechat.mysqlrw.MysqlRw()
+                            m = chat.mysqlrw.MysqlRw()
                             at_user = m.get_group_users(m.return_user_id(nickname))
-                            itchat.send(msg=at_user +' '+ msg, toUserName=chatroom['UserName'])
+                            itchat.send(msg=at_user + ' ' + msg, toUserName=chatroom['UserName'])
 
 
                 else:
                     logger.info("未找到群聊:%s", nickname)
 
-    # 使用示例
-
-    # @classmethod
-    # def send_song(self,nickname):
-    #     r = itchat.send_file('周杰伦-搁浅.mp3', toUserName=nickname, msgType='File')
-    #     logger.info(r)
-    #     r = itchat.send('@fil@%s' % '周杰伦-搁浅.mp3',nickname)
-    #     logger.info(r)
-    #     r = itchat.send('@vid@%s' % '周杰伦-搁浅.mp3',nickname)
-    #     logger.info(r)
-    #
-    # #
-    # @itchat.msg_register(FRIENDS)
-    # def add_friend(msg):
-    #     itchat.add_friend(**msg['Text'])  # 该操作会自动将新好友的消息录入，不需要重载通讯录
-    #     itchat.send_msg('Nice to meet you!', msg['RecommendInfo']['UserName'])
-
-# def startup(self):
-#     itchat.instance.receivingRetryCount = 600  # 修改断线超时时间
-#     # login by scan QRCode
-#     hotReload = conf().get("hot_reload", False)
-#     status_path = os.path.join(get_appdata_dir(), "itchat.pkl")
-#     itchat.auto_login(
-#         enableCmdQR=2,
-#         hotReload=hotReload,
-#         statusStorageDir=status_path,
-#         qrCallback=qrCallback,
-#         loginCallback=self.login_callback,
-#         exitCallback=self.logout_callback
-#     )
-#     self.user_id = itchat.instance.storageClass.userName
-#     self.name = itchat.instance.storageClass.nickName
-#     logger.info("Wechat login success, user_id: {}, nickname: {}".format(self.user_id, self.name))
-#     # start message listener
-#     itchat.run()
-
-
-#

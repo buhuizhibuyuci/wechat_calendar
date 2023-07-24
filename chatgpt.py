@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
+import json
 
 import openai
 class ChatGpt:
+    # 读取配置文件
+    with open('config.json') as f:
+        config_data = json.load(f)
+
+    openai_key = config_data['open_ai_api_key']
+    model = config_data['model']
+    proxy = config_data['proxy']
 
 
     def __init__(self):
+
 
 
         self.objects = []  # 存储历史记录的对象列表
@@ -36,10 +45,10 @@ class ChatGpt:
         return reply
 
     def generate_reply(self, history):
-        openai.api_key = 'ak-e259f9ae1e8f584933fd783df99a5e3c'
-        openai.api_base = "https://gptapi.nextweb.fun/api/openai/v1"
+        openai.api_key = self.openai_key
+        openai.api_base = self.proxy
         chat_completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo-16k",
+            model=self.model,
             messages=[{"role": "user", "content": history}],
             timeout=10
         )

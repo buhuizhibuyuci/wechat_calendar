@@ -3,7 +3,8 @@ import time
 import random
 import hashlib
 import json
-from lib.itchat.utils import logger
+
+from chat.lib.itchat.utils import logger
 
 
 def translation(text):

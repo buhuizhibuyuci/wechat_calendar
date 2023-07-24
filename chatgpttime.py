@@ -1,14 +1,21 @@
+import json
 import time
 import openai
 
-import calendar_wechat.wechat_server
-from lib.itchat.utils import logger
+from chat.lib.itchat.utils import logger
 
 
 class GptTime:
-    # 设置OpenAI API凭据
-    openai.api_key = 'ak-e259f9ae1e8f584933fd783df99a5e3c'
-    openai.api_base = "https://gptapi.nextweb.fun/api/openai/v1"
+
+    # 读取配置文件
+    with open('config.json') as f:
+        config_data = json.load(f)
+
+
+    model = config_data['model']
+
+    openai.api_key = config_data['open_ai_api_key']
+    openai.api_base = config_data['proxy']
     prompt = None
     context = []
     response = None
@@ -28,7 +35,7 @@ class GptTime:
             messages.pop(1)
 
         chat_completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model=self.model,
             messages=messages,
             timeout=10
         )
@@ -42,7 +49,7 @@ class GptTime:
             ]
 
             chat_completion = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
+                model=self.model,
                 messages=self.context,
                 timeout=10
             )
@@ -63,7 +70,7 @@ class GptTime:
                        f"写出新单词的英语音标，词性和对应的中文意思。例如：zipper [ˈzɪpər] n.拉链。以下是我给出的新单词列表：{words}。"
 
         chat_completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo-16k",
+            model=self.model,
             messages=[{"role": "user", "content": word_teacher}],
             timeout=20
         )
@@ -74,10 +81,10 @@ class GptTime:
 
 
 
-    def parse_time(self, task_time=None):
+    def parse_time(self, task_time):
 
         # 调用GPT-3.5-turbo模型生成回复
-
+        logger.info(task_time)
 
         day_time = "你现在是一个时间识别器，1.你会变得沉默寡言，除了时间，其余都不回答，请忽略除时间之外的任何内容" \
                    "而不是其他任何内容。不要写解释。除非我指示您这样做。" \
@@ -119,7 +126,10 @@ class GptTime:
                    "我给你的时间是每天早上、上午、中午、下午、晚上、傍晚几点几分的形式，你需要把提供给你的时间转换为格式化时间，格式为：EveryDay HH:mm。" \
                    "如果没有提供分钟，则按照00处理。注意，时间格式应为EveryDay HH:mm，而不是具体的某年某月某日。也不是今天。" \
                    "当前时间为：{}，我需要你转换的时间是：{}".format(time.ctime(), task_time)
-        if '今晚' in task_time or '今早' in task_time or \
+        if '每天' in task_time:
+            self.prompt = everyday
+            logger.info('每天')
+        elif '今晚' in task_time or '今早' in task_time or \
                 '明早' in task_time or '明晚' in task_time \
                 or '后早' in task_time or '后晚' in task_time or '今天' in task_time or '明天' in task_time or '后天' in task_time or '大后天' in task_time:
             self.prompt = day_time
@@ -127,16 +137,13 @@ class GptTime:
             self.prompt = worke_time
         elif '年' in task_time or '月' in task_time or '日' in task_time or '时' in task_time or '分' in task_time:
             self.prompt = specific_date
-        elif '每天' in task_time:
-            self.prompt = everyday
 
-        else:
-            self.parse_time(task_time)
+
 
         print(time.ctime())
         if self.prompt != None:
             chat_completion = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo-16k",
+                model=self.model,
                 messages=[{"role": "user", "content": self.prompt}],
                 timeout=10
             )

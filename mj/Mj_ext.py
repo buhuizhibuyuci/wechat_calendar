@@ -1,8 +1,9 @@
+import json
 import time
 import requests
-from calendar_wechat.mj.dowanload import download_image
-from calendar_wechat.wechat_server import WechatServer
-from lib.itchat.utils import logger
+from chat.mj.dowanload import download_image
+from chat.wechat_server import WechatServer
+
 
 def send_to_msg(msg,nickname):
     if 'output.png' in msg:
@@ -15,12 +16,21 @@ def send_to_msg(msg,nickname):
 
 
 def mj(prompt,nickname):
+    # 读取配置文件
+    with open('config.json') as f:
+        config_data = json.load(f)
+
+
+    mj_token = config_data['mj_token']
+
+
+
     # 请求URL
     url = "https://api.zxx.im/v1/request"
 
     # 请求参数
     params = {
-        "token": "26b7bfd9-98ab-4081-b743-4fc32d4d8b45",
+        "token": mj_token,
         "fast": True,
         "action": "CREATE_IMAGE",
         "prompt": f"{prompt}"

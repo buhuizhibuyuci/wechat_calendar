@@ -1,16 +1,16 @@
 import threading
 import time
 
-from calendar_wechat.chatgpt import ChatGpt
-from calendar_wechat.mj.Mj_ext import mj
-from calendar_wechat.mulic import  music_search
-from calendar_wechat.mysqlrw import MysqlRw
-from calendar_wechat.chatgpttime import GptTime
-from calendar_wechat.wechat_server import WechatServer
-from calendar_wechat.youdao import translation
-from lib import itchat
-from lib.itchat.utils import logger
-from lib.itchat.content import FRIENDS, TEXT, ATTACHMENT
+from chat.chatgpt import ChatGpt
+from chat.lib.itchat.utils import logger
+from chat.mj.Mj_ext import mj
+from chat.mulic import  music_search
+from chat.mysqlrw import MysqlRw
+from chat.chatgpttime import GptTime
+from chat.wechat_server import WechatServer
+from chat.youdao import translation
+from chat.lib import itchat
+from chat.lib.itchat.content import FRIENDS, TEXT, ATTACHMENT
 
 '''
 读取微信消息菜单类
@@ -79,21 +79,22 @@ class ReadWechatMsg:
             # logger.info('微信号:{}'.format(msg['UserName']))
 
             fenge = ['--------------------------------------------\n', '--------------------------------------------']
-            number = '①②③④⑤⑥⑦⑧⑨⑩'
-            number = list(number)
+
 
             hello = f'{fenge[0]}{nickname} 你好呀😊，我是Server酱\n我可以帮你解答很多问题\n也可以当你的备忘录\n' \
                     f'比如明天早上8点叫我起床\n当然还有很多功能，如果想试试的话\n发送咒语:菜单\n{fenge[1]}'
-            menum = f'{fenge[0]}⏰ {number[0]}.创建定时任务提醒\n' \
-                    f'⏰ {number[1]}取消定时任务\n' \
-                    f'⏰ {number[2]}查看定时任务列表\n' \
-                    f'⏰ {number[3]}修改更新定时任务\n' \
-                    f'📅 {number[4]}创建课程表\n' \
-                    f'📅 {number[5]}删除课程表\n' \
-                    f'📅 {number[6]}查看课程表\n' \
-                    f'🔤 {number[7]}有道翻译\n' \
-                    f'🛠 {number[8]}技术支持，人工服务\n' \
-                    f'🎵 {number[9]}emo网易云\n' \
+            menum = f'{fenge[0]}' \
+                    f'⏰ 1.创建定时任务提醒\n' \
+                    f'⏰ 2 取消定时任务\n' \
+                    f'⏰ 3 查看定时任务列表\n' \
+                    f'⏰ 4 修改更新定时任务\n' \
+                    f'📅 5 创建课程表\n' \
+                    f'📅 6 删除课程表\n' \
+                    f'📅 7 查看课程表\n' \
+                    f'🔤 8 有道翻译\n' \
+                    f'🛠 9 技术支持，人工服务\n' \
+                    f'🎵 10 emo网易云\n' \
+                    f'🎵 11 mj AI绘画\n' \
                     f'{fenge[1]}'
 
 
@@ -148,7 +149,7 @@ class ReadWechatMsg:
             # 获取好友的UserName，可以通过itchat.search_friends()方法获取好友列表，然后根据好友的备注名或昵称查找对应的UserName
             if msg['Text'] == '你好':
                 return hello
-            elif '绘画' == msg['Text']:
+            elif '11' == msg['Text']:
                 server.send_calendar('绘画：提示词',nickname)
             elif '绘画：' in msg['Text']:
                 pmomt = msg['Text'].split('：')[1]
@@ -271,7 +272,7 @@ class ReadWechatMsg:
 
                 song = msg['Text'].split('：')[1]
                 logger.info(song)
-                r = music_search('iyh3pGKYr66YJaxV',song)
+                r = music_search(song)
                 logger.info(r)
                 result = '\n'.join(r)
                 return result
@@ -365,23 +366,23 @@ class ReadWechatMsg:
 
                 fenge = ['--------------------------------------------\n',
                          '--------------------------------------------']
-                number = '①②③④⑤⑥⑦⑧⑨⑩'
-                number = list(number)
+
 
                 hello = f'{fenge[0]}{nickname} 你好呀😊，我是Server酱\n我可以帮你解答很多问题\n也可以当你的备忘录\n' \
                         f'比如明天早上8点叫我起床\n当然还有很多功能，如果想试试的话\n发送咒语:菜单\n{fenge[1]}'
-                menum = f'{fenge[0]}⏰ {number[0]}.创建定时任务提醒\n' \
-                        f'⏰ {number[1]}取消定时任务\n' \
-                        f'⏰ {number[2]}查看定时任务列表\n' \
-                        f'⏰ {number[3]}修改更新定时任务\n' \
-                        f'📅 {number[4]}创建课程表\n' \
-                        f'📅 {number[5]}删除课程表\n' \
-                        f'📅 {number[6]}查看课程表\n' \
-                        f'🔤 {number[7]}有道翻译\n' \
-                        f'🛠 {number[8]}技术支持，人工服务\n' \
-                        f'🎵 {number[9]}emo网易云\n' \
+                menum = f'{fenge[0]}' \
+                        f'⏰ 1.创建定时任务提醒\n' \
+                        f'⏰ 2 取消定时任务\n' \
+                        f'⏰ 3 查看定时任务列表\n' \
+                        f'⏰ 4 修改更新定时任务\n' \
+                        f'📅 5 创建课程表\n' \
+                        f'📅 6 删除课程表\n' \
+                        f'📅 7 查看课程表\n' \
+                        f'🔤 8 有道翻译\n' \
+                        f'🛠 9 技术支持，人工服务\n' \
+                        f'🎵 10 emo网易云\n' \
+                        f'🎵 11 mj AI绘画\n' \
                         f'{fenge[1]}'
-
 
                 time_task = f'{fenge[0]}⏰ 创建定时任务：\n注意：定时任务 时间 事件之间留有空格\n' \
                             '   格式：       时间      事件\n' \
@@ -553,7 +554,7 @@ class ReadWechatMsg:
 
                     song = message_text.split('：')[1]
                     logger.info(song)
-                    r = music_search('iyh3pGKYr66YJaxV', song)
+                    r = music_search(song)
                     logger.info(r)
                     result = '\n'.join(r)
                     return result
@@ -606,8 +607,7 @@ if __name__ == '__main__':
     server = WechatServer()
     sql = MysqlRw()
     r = ReadWechatMsg(sql)
-    # send = threading.Thread()
-    # server.send_song('早睡不早起')
+
 
     itchat_thread = threading.Thread(target=itchat.run)
     itchat_thread.setDaemon(True)  # 将线程设置为后台线程

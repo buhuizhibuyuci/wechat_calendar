@@ -94,10 +94,18 @@ import requests
 # driver.quit()
 
 
-def music_search(api_key, keyword):
+def music_search(keyword):
+    # 读取配置文件
+    with open('config.json') as f:
+        config_data = json.load(f)
+
+    search_url = config_data['open_ai_api_key']
+    music_search_token = config_data['model']
+
+
     # 第一步：搜索音乐
-    search_url = "https://v2.alapi.cn/api/music/search"
-    search_payload = {"token": api_key, "keyword": keyword}
+
+    search_payload = {"token": music_search_token, "keyword": keyword}
     search_headers = {'Content-Type': "application/x-www-form-urlencoded"}
 
     try:
@@ -113,7 +121,7 @@ def music_search(api_key, keyword):
         for song in songs_info:
             song_id = song['id']
 
-            url_payload = {"id": str(song_id), "format": "json", "token": api_key}
+            url_payload = {"id": str(song_id), "format": "json", "token": music_search_token}
             url_response = requests.request("GET", "https://v2.alapi.cn/api/music/url", params=url_payload)
 
             url_info = url_response.json()
@@ -176,5 +184,5 @@ def get_short_link(api_key, url):
 
 if __name__ == '__main__':
 
-    r = music_search('iyh3pGKYr66YJaxV', '最好的安排')
+    r = music_search('最好的安排')
     print(r)

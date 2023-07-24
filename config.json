@@ -1,0 +1,13 @@
+{
+  "open_ai_api_key": "ak-e259f9ae1e8f584933fd783df99a5e3c",
+  "model": "gpt-3.5-turbo-16k",
+  "proxy": "https://gptapi.nextweb.fun/api/openai/v1",
+  "mj_token":"//mj_token需要到下面这个网址注册",
+  "mj_url": "https://midjourneyapi.zxx.im/main",
+  "search_url" : "https://v2.alapi.cn/api/music/search",
+  "music_search_token": "YOUR API TOKEN",
+  "mysql_host": "localhost",
+  "mysql_username": "root",
+  "mysql_password": "root",
+  "mysql_databases": "wechat_server"
+}
